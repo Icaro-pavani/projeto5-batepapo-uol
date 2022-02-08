@@ -22,7 +22,7 @@
   <body>
     <header>
       <img src="images/logo.jpg" alt="Bate-Papo Uol" />
-      <ion-icon name="people"></ion-icon>
+      <ion-icon class="open-sidebar" name="people"></ion-icon>
     </header>
 
     <main>
@@ -53,54 +53,53 @@
       </div>
     </main>
 
-    <aside>
-      <div class="sidebar faded">
-        <div class="title">
-          <h1>Escolha um contato para enviar mensagem:</h1>
-        </div>
+    <aside class="sidebar faded">
+      <div class="title">
+        <h1>Escolha um contato para enviar mensagem:</h1>
+      </div>
 
-        <div class="contacts">
-          <div class="contact">
-            <div class="info">
-              <ion-icon name="people"></ion-icon>
-              <p>Todos</p>
-            </div>
-            <ion-icon class="check" name="checkmark-outline"></ion-icon>
-          </div>
-          <div class="contact">
-            <div class="info">
-              <ion-icon name="person-circle"></ion-icon>
-              <p>João</p>
-            </div>
-            <ion-icon class="check" name="checkmark-outline"></ion-icon>
-          </div>
-          <div class="contact">
-            <div class="info">
-              <ion-icon name="person-circle"></ion-icon>
-              <p>Maria</p>
-            </div>
-            <ion-icon class="check" name="checkmark-outline"></ion-icon>
-          </div>
-        </div>
-        <div class="second-title">
-          <h1>Escolha a visibilidade:</h1>
-        </div>
-        <div class="visibility">
+      <div class="contacts">
+        <div class="contact">
           <div class="info">
-            <ion-icon name="lock-open"></ion-icon>
-            <p>Público</p>
+            <ion-icon name="people"></ion-icon>
+            <p>Todos</p>
           </div>
           <ion-icon class="check" name="checkmark-outline"></ion-icon>
         </div>
-        <div class="visibility">
+        <div class="contact">
           <div class="info">
-            <ion-icon name="lock-closed"></ion-icon>
-            <p>Reservadamente</p>
+            <ion-icon name="person-circle"></ion-icon>
+            <p>João</p>
+          </div>
+          <ion-icon class="check" name="checkmark-outline"></ion-icon>
+        </div>
+        <div class="contact">
+          <div class="info">
+            <ion-icon name="person-circle"></ion-icon>
+            <p>Maria</p>
           </div>
           <ion-icon class="check" name="checkmark-outline"></ion-icon>
         </div>
       </div>
+      <div class="second-title">
+        <h1>Escolha a visibilidade:</h1>
+      </div>
+      <div class="visibility">
+        <div class="info">
+          <ion-icon name="lock-open"></ion-icon>
+          <p>Público</p>
+        </div>
+        <ion-icon class="check" name="checkmark-outline"></ion-icon>
+      </div>
+      <div class="visibility">
+        <div class="info">
+          <ion-icon name="lock-closed"></ion-icon>
+          <p>Reservadamente</p>
+        </div>
+        <ion-icon class="check" name="checkmark-outline"></ion-icon>
+      </div>
     </aside>
+    <div class="close-sidebar isClose"></div>
 
     <footer>
       <form action="">
@@ -108,5 +107,7 @@
       </form>
       <ion-icon name="paper-plane-outline"></ion-icon>
     </footer>
+
+    <script src="script/script.js"></script>
   </body>
 </html>
