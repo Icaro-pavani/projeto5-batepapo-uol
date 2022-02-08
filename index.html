@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style/reset.css" type="text/css" />
+    <link rel="stylesheet" href="style/style.css" type="text/css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Console dos browsers indicaram que adicionar aqui melhoraria a eficiência -->
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.esm.js"
+    ></script>
+    <title>Bate-Papo Uol</title>
+  </head>
+  <body>
+    <header>
+      <img src="images/logo.jpg" alt="Bate-Papo Uol" />
+      <ion-icon name="people"></ion-icon>
+    </header>
+
+    <main>
+        <div class="entry">
+            <p><span class="hour">(09:21:45)</span>  <span class="name"><strong>João</strong></span>  entra na sala...</p>
+        </div>
+        <div class="public">
+            <p><span class="hour">(09:22:28)</span> <span class="name"><strong>João</strong> para <strong>Todos</strong>:</span>  Bom dia</p>
+        </div>
+        <div class="private">
+            <p><span class="hour">(09:22:48)</span> <span class="name"><strong>João</strong> reservadamente para <strong>Maria</strong>:</span>  Oi gatinha quer tc?</p>
+        </div>
+    </main>
+
+    <aside>
+        <div class="sidebar faded">
+            <h1>Escolha um contato para enviar mensagem:</h1>
+            <ul>
+                <li><ion-icon name="people"></ion-icon> Todos</li>
+                <li><ion-icon name="person-circle"></ion-icon> João</li>
+                <li><ion-icon name="person-circle"></ion-icon> Maria</li>
+            </ul>
+            <h1>Escolha a visibilidade:</h1>
+            <ul>
+                <li><ion-icon name="lock-open"></ion-icon> Público</li>
+                <li><ion-icon name="lock-closed"></ion-icon> Reservadamente</li>
+            </ul>
+        </div>
+    </aside>
+
+    <footer>
+      <form action="">
+        <input type="text" placeholder="Escreva aqui..." />
+      </form>
+      <ion-icon name="paper-plane-outline"></ion-icon>
+    </footer>
+  </body>
+</html>
