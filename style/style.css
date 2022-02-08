@@ -90,9 +90,85 @@ aside {
     left: 0;
     width: 100%;
     height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 2;
 }
 
-.
+.sidebar {
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: 70%;
+    height: 100%;
+    background-color: #fff;
+}
+
+.sidebar ion-icon {
+    width: 25px;
+    height: 25px;
+}
+
+.title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10% 18%;
+    height: 84px;
+}
+
+h1 {
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 19px;
+}
+
+.contact {
+    display: flex;
+    align-items: center;
+    height: 36px;
+    justify-content: space-between;
+    margin: 0 27px 0 17px;
+}
+
+.info ion-icon {
+    height: 25px;
+    width: 25px;
+    margin-right: 7px;
+}
+
+.info {
+    display: flex;
+    align-items: center;
+}
+
+.info p {
+    font-size: 16px;
+    line-height: 19px;
+}
+
+ion-icon.check {
+    width: 15px;
+    height: 12px;
+    --ionicon-stroke-width: 120px;
+    color: #28bb25;
+}
+
+.second-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10% 18%;
+    height: 60px;
+}
+
+.visibility {
+    display: flex;
+    align-items: center;
+    height: 36px;
+    justify-content: space-between;
+    margin: 0 27px 0 17px;
+}
 
 footer {
     display: flex;
@@ -100,11 +176,12 @@ footer {
     justify-content: space-between;
     width: 100%;
     height: 80px;
-    position: absolute;
+    position: fixed;
     bottom: 0;
     left: 0;
     box-shadow: 0px -4px 6px rgba(0, 0, 0, 0.05);
     background-color: #fff;
+    z-index: 0;
 }
 
 footer input {

@@ -26,31 +26,80 @@
     </header>
 
     <main>
-        <div class="entry">
-            <p><span class="hour">(09:21:45)</span>  <span class="name"><strong>João</strong></span>  entra na sala...</p>
-        </div>
-        <div class="public">
-            <p><span class="hour">(09:22:28)</span> <span class="name"><strong>João</strong> para <strong>Todos</strong>:</span>  Bom dia</p>
-        </div>
-        <div class="private">
-            <p><span class="hour">(09:22:48)</span> <span class="name"><strong>João</strong> reservadamente para <strong>Maria</strong>:</span>  Oi gatinha quer tc?</p>
-        </div>
+      <div class="entry">
+        <p>
+          <span class="hour">(09:21:45)</span>
+          <span class="name"><strong>João</strong></span> entra na sala...
+        </p>
+      </div>
+      <div class="public">
+        <p>
+          <span class="hour">(09:22:28)</span>
+          <span class="name"
+            ><strong>João</strong> para <strong>Todos</strong>:</span
+          >
+          Bom dia
+        </p>
+      </div>
+      <div class="private">
+        <p>
+          <span class="hour">(09:22:48)</span>
+          <span class="name"
+            ><strong>João</strong> reservadamente para
+            <strong>Maria</strong>:</span
+          >
+          Oi gatinha quer tc?
+        </p>
+      </div>
     </main>
 
     <aside>
-        <div class="sidebar faded">
-            <h1>Escolha um contato para enviar mensagem:</h1>
-            <ul>
-                <li><ion-icon name="people"></ion-icon> Todos</li>
-                <li><ion-icon name="person-circle"></ion-icon> João</li>
-                <li><ion-icon name="person-circle"></ion-icon> Maria</li>
-            </ul>
-            <h1>Escolha a visibilidade:</h1>
-            <ul>
-                <li><ion-icon name="lock-open"></ion-icon> Público</li>
-                <li><ion-icon name="lock-closed"></ion-icon> Reservadamente</li>
-            </ul>
+      <div class="sidebar faded">
+        <div class="title">
+          <h1>Escolha um contato para enviar mensagem:</h1>
         </div>
+
+        <div class="contacts">
+          <div class="contact">
+            <div class="info">
+              <ion-icon name="people"></ion-icon>
+              <p>Todos</p>
+            </div>
+            <ion-icon class="check" name="checkmark-outline"></ion-icon>
+          </div>
+          <div class="contact">
+            <div class="info">
+              <ion-icon name="person-circle"></ion-icon>
+              <p>João</p>
+            </div>
+            <ion-icon class="check" name="checkmark-outline"></ion-icon>
+          </div>
+          <div class="contact">
+            <div class="info">
+              <ion-icon name="person-circle"></ion-icon>
+              <p>Maria</p>
+            </div>
+            <ion-icon class="check" name="checkmark-outline"></ion-icon>
+          </div>
+        </div>
+        <div class="second-title">
+          <h1>Escolha a visibilidade:</h1>
+        </div>
+        <div class="visibility">
+          <div class="info">
+            <ion-icon name="lock-open"></ion-icon>
+            <p>Público</p>
+          </div>
+          <ion-icon class="check" name="checkmark-outline"></ion-icon>
+        </div>
+        <div class="visibility">
+          <div class="info">
+            <ion-icon name="lock-closed"></ion-icon>
+            <p>Reservadamente</p>
+          </div>
+          <ion-icon class="check" name="checkmark-outline"></ion-icon>
+        </div>
+      </div>
     </aside>
 
     <footer>
