@@ -2,6 +2,7 @@ const options = document.querySelector('.open-sidebar');
 const closeSidebar = document.querySelector('.close-sidebar');
 const contacts = document.querySelectorAll(".contact");
 const visibilities = document.querySelectorAll(".visibility");
+const sendButton = document.querySelector("footer ion-icon");
 
 let user = {
     name: null
@@ -10,6 +11,12 @@ let user = {
 let groupMessages = "";
 let initiateMessages = null;
 let refreshLogin = null;
+
+sendButton.addEventListener("click", function() {
+    let message = document.querySelector("input");
+    sendMessage(message.value);
+    message.value = "";
+})
 
 options.addEventListener("click", function () {
     document.querySelector(".sidebar").classList.toggle("faded");
@@ -60,6 +67,26 @@ function checkError(error) {
 
 function resendName(){
     axios.post("https://mock-api.driven.com.br/api/v4/uol/status", user);
+}
+
+function sendMessage(message) {
+    messageObject = {
+        from: user.name,
+        to: "Todos",
+        text: message,
+        type: "message"
+    };
+    postMessage(messageObject);
+}
+
+function postMessage(messageObject) {
+    checkDelivery = axios.post("https://mock-api.driven.com.br/api/v4/uol/messages", messageObject);
+    checkDelivery.then(refreshAfterPostMessage);
+}
+
+function refreshAfterPostMessage(answer) {
+    console.log(answer);
+    reloadMessages();
 }
 
 function loadMessages(messages) {

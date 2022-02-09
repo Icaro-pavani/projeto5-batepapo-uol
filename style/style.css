@@ -204,7 +204,7 @@ footer {
 }
 
 footer input {
-    width: 145px;
+    width: 80vw;
     height: 30px;
     font-size: 18px;
     font-weight: 400;
@@ -227,6 +227,7 @@ footer ion-icon {
     width: 26px;
     height: 26px;
     margin-right: 18px;
+    cursor: pointer;
 }
 
 .isClose {
