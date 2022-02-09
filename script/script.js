@@ -9,6 +9,7 @@ let user = {
 
 let groupMessages = "";
 let initiateMessages = null;
+let refreshLogin = null;
 
 options.addEventListener("click", function () {
     document.querySelector(".sidebar").classList.toggle("faded");
@@ -32,17 +33,6 @@ visibilities.forEach(visibility => {
     })
 });
 
-function initiateChat(answer){
-    console.log(answer);
-    initiateMessages = setInterval(reloadMessages, 3000);
-}
-
-function checkError(error) {
-    user.name = prompt("Nome selecionado já em uso, digite outro nome:");
-    console.log(error);
-    checkLoginName();
-}
-
 function checkLoginName() {
     if (user.name){
         console.log(user.name)
@@ -56,6 +46,21 @@ function checkLoginName() {
     }
 }
 
+function initiateChat(answer){
+    console.log(answer);
+    initiateMessages = setInterval(reloadMessages, 3000);
+    refreshLogin = setInterval(resendName, 5000);
+}
+
+function checkError(error) {
+    user.name = prompt("Nome selecionado já em uso, digite outro nome:");
+    console.log(error);
+    checkLoginName();
+}
+
+function resendName(){
+    axios.post("https://mock-api.driven.com.br/api/v4/uol/status", user);
+}
 
 function loadMessages(messages) {
     messages.forEach(message => {
