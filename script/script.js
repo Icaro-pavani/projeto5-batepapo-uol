@@ -3,6 +3,8 @@ const closeSidebar = document.querySelector('.close-sidebar');
 const contacts = document.querySelectorAll(".contact");
 const visibilities = document.querySelectorAll(".visibility");
 
+let groupMessages = "";
+
 options.addEventListener("click", function () {
     document.querySelector(".sidebar").classList.toggle("faded");
     document.querySelector(".close-sidebar").classList.toggle("isClose");
@@ -27,7 +29,6 @@ visibilities.forEach(visibility => {
 
 function loadMessages(messages) {
     messages.forEach(message => {
-        let groupMessages = "";
         switch (message.type) {
             case "status":
                 groupMessages += `
@@ -61,16 +62,27 @@ function loadMessages(messages) {
                 </div>`;
                 break;
         }
-        const mainPartion = document.querySelector("main");
-        mainPartion.innerHTML += groupMessages;
-        const messagesLoaded = document.querySelectorAll(".message");
-        messagesLoaded[messagesLoaded.length - 1].scrollIntoView();
     });
+    printMessages(groupMessages);
+    groupMessages = "";
 }
 
-let promise = axios.get("https://mock-api.driven.com.br/api/v4/uol/messages");
+function printMessages(groupMessages) {
+    const mainContent = document.querySelector("main");
+    // console.log(mainContent.innerHTML);
+    if (mainContent.innerHTML !== groupMessages) {
+        mainContent.innerHTML = groupMessages;
+        const messagesLoaded = document.querySelectorAll(".message");
+        messagesLoaded[messagesLoaded.length - 1].scrollIntoView();
+    }
+}
 
-promise.then(getMessages);
+function reloadMessages() {
+    let promise = axios.get("https://mock-api.driven.com.br/api/v4/uol/messages");
+    promise.then(getMessages);
+}
+
+let cancel = setInterval(reloadMessages, 3000);
 
 function getMessages(response) {
     console.log(response);
