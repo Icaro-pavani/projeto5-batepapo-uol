@@ -3,7 +3,12 @@ const closeSidebar = document.querySelector('.close-sidebar');
 const contacts = document.querySelectorAll(".contact");
 const visibilities = document.querySelectorAll(".visibility");
 
+let user = {
+    name: null
+};
+
 let groupMessages = "";
+let initiateMessages = null;
 
 options.addEventListener("click", function () {
     document.querySelector(".sidebar").classList.toggle("faded");
@@ -27,6 +32,31 @@ visibilities.forEach(visibility => {
     })
 });
 
+function initiateChat(answer){
+    console.log(answer);
+    initiateMessages = setInterval(reloadMessages, 3000);
+}
+
+function checkError(error) {
+    user.name = prompt("Nome selecionado já em uso, digite outro nome:");
+    console.log(error);
+    checkLoginName();
+}
+
+function checkLoginName() {
+    if (user.name){
+        console.log(user.name)
+        let serverRequisition = axios.post("https://mock-api.driven.com.br/api/v4/uol/participants", user)
+        serverRequisition.then(initiateChat);
+        serverRequisition.catch(checkError);
+    } else {
+        user.name = prompt("Qual será seu nome?");
+        console.log(user);
+        checkLoginName();
+    }
+}
+
+
 function loadMessages(messages) {
     messages.forEach(message => {
         switch (message.type) {
@@ -35,7 +65,7 @@ function loadMessages(messages) {
                 <div class="message entry">
                     <p>
                         <span class="hour">${message.time}</span>
-                        <span class="name"><strong>${message.from}</strong></span> ${message.text}entra na sala...
+                        <span class="name"><strong>${message.from}</strong></span> ${message.text}
                     </p>
                 </div>`;
                 break;
@@ -82,11 +112,11 @@ function reloadMessages() {
     promise.then(getMessages);
 }
 
-let cancel = setInterval(reloadMessages, 3000);
-
 function getMessages(response) {
     console.log(response);
     const messages = response.data;
     console.log(messages);
     loadMessages(messages);
 }
+
+checkLoginName();
