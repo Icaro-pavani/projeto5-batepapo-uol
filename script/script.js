@@ -9,11 +9,20 @@ let user = {
 };
 
 let messageElement = "";
+let membersAreaText = `
+        <div class="contact" onclick="selectMember(this);">
+          <div class="info">
+            <ion-icon name="people"></ion-icon>
+            <p>Todos</p>
+          </div>
+          <ion-icon class="check" name="checkmark-outline"></ion-icon>
+        </div>`;
 let lastMessage = null;
 let initiateMessages = null;
 let refreshLogin = null;
+let loadMembers = null;
 
-sendButton.addEventListener("click", function() {
+sendButton.addEventListener("click", function () {
     let message = document.querySelector("input");
     sendMessage(message.value);
     message.value = "";
@@ -29,13 +38,14 @@ closeSidebar.addEventListener("click", function () {
     document.querySelector(".sidebar").classList.toggle("faded");
 });
 
-contacts.forEach(contact => {
-    contact.addEventListener("click", () => {
-        let checkMark = document.querySelector(".contact .selected");
+function selectMember(member) {
+    let checkMark = document.querySelector(".contact .selected");
+    if (checkMark !== null){
         checkMark.classList.remove("selected");
-        contact.querySelector(".check").classList.add("selected");
-    })
-});
+    }
+    member.querySelector(".check").classList.add("selected");
+}
+
 
 visibilities.forEach(visibility => {
     visibility.addEventListener("click", () => {
@@ -46,22 +56,23 @@ visibilities.forEach(visibility => {
 });
 
 function checkLoginName() {
-    if (user.name){
-        console.log(user.name)
+    if (user.name) {
+        // console.log(user.name)
         let serverRequisition = axios.post("https://mock-api.driven.com.br/api/v4/uol/participants", user)
         serverRequisition.then(initiateChat);
         serverRequisition.catch(checkError);
     } else {
         user.name = prompt("Qual será seu nome?");
-        console.log(user);
+        // console.log(user);
         checkLoginName();
     }
 }
 
-function initiateChat(answer){
-    console.log(answer.response);
+function initiateChat(answer) {
+    // console.log(answer.response);
     initiateMessages = setInterval(reloadMessages, 3000);
     refreshLogin = setInterval(resendName, 5000);
+    loadMembers = setInterval(showMembers, 10000);
 }
 
 function checkError(error) {
@@ -70,7 +81,7 @@ function checkError(error) {
     checkLoginName();
 }
 
-function resendName(){
+function resendName() {
     axios.post("https://mock-api.driven.com.br/api/v4/uol/status", user);
 }
 
@@ -91,7 +102,7 @@ function postMessage(messageObject) {
 }
 
 function refreshAfterPostMessage(answer) {
-    console.log(answer);
+    // console.log(answer);
     reloadMessages();
 }
 
@@ -101,7 +112,7 @@ function refreshPage(error) {
 }
 
 function loadMessages(messages) {
-    if (!lastMessage){
+    if (!lastMessage) {
         messages.forEach(message => {
             addMessage(message);
             printMessages(messageElement);
@@ -109,16 +120,16 @@ function loadMessages(messages) {
         });
     } else {
         const index = messages.findIndex(object => object.time === lastMessage.time);
-        console.log(index);
-        console.log(messages.length - 1);
+        // console.log(index);
+        // console.log(messages.length - 1);
         // console.log(lastMessage);
         if (messages.length - 1 !== index) {
-            for (let i = index + 1; i < messages.length; i++){
-                console.log(index);
+            for (let i = index + 1; i < messages.length; i++) {
+                // console.log(index);
                 addMessage(messages[i]);
                 printMessages(messageElement);
                 lastMessage = messages[i];
-            }        
+            }
         }
     }
 }
@@ -174,14 +185,54 @@ function reloadMessages() {
 }
 
 function getMessages(response) {
-    console.log(response);
+    // console.log(response);
     const messages = response.data;
-    console.log(messages);
+    // console.log(messages);
     loadMessages(messages);
 }
 
 function errorGetMessages(error) {
     console.log(error.response);
+}
+
+function showMembers() {
+    let promise = axios.get("https://mock-api.driven.com.br/api/v4/uol/participants");
+    promise.then(getMembers);
+    promise.catch(showMemberError);
+}
+
+function getMembers(members) {
+    console.log(members);
+    const membersDisplay = document.querySelector(".contacts");
+    members.data.forEach(member => {
+        addMember(member);
+    });
+    membersDisplay.innerHTML = membersAreaText;
+    membersAreaText = `
+        <div class="contact" onclick="selectMember(this);">
+          <div class="info">
+            <ion-icon name="people"></ion-icon>
+            <p>Todos</p>
+          </div>
+          <ion-icon class="check" name="checkmark-outline"></ion-icon>
+        </div>`;
+}
+
+function showMemberError(error) {
+    console.log(error.response);
+}
+
+function addMember(member) {
+    if (member !== user) {
+        membersAreaText += `
+        <div class="contact" onclick="selectMember(this);">
+          <div class="info">
+            <ion-icon name="person-circle"></ion-icon>
+            <p>${member.name}</p>
+          </div>
+          <ion-icon class="check" name="checkmark-outline"></ion-icon>
+        </div>`
+    }
 }
 
 checkLoginName();
