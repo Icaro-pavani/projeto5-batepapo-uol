@@ -8,7 +8,8 @@ let user = {
     name: null
 };
 
-let groupMessages = "";
+let messageElement = "";
+let lastMessage = null;
 let initiateMessages = null;
 let refreshLogin = null;
 
@@ -54,7 +55,7 @@ function checkLoginName() {
 }
 
 function initiateChat(answer){
-    console.log(answer);
+    console.log(answer.response);
     initiateMessages = setInterval(reloadMessages, 3000);
     refreshLogin = setInterval(resendName, 5000);
 }
@@ -82,6 +83,7 @@ function sendMessage(message) {
 function postMessage(messageObject) {
     checkDelivery = axios.post("https://mock-api.driven.com.br/api/v4/uol/messages", messageObject);
     checkDelivery.then(refreshAfterPostMessage);
+    checkDelivery.catch(refreshPage);
 }
 
 function refreshAfterPostMessage(answer) {
@@ -89,59 +91,82 @@ function refreshAfterPostMessage(answer) {
     reloadMessages();
 }
 
-function loadMessages(messages) {
-    messages.forEach(message => {
-        switch (message.type) {
-            case "status":
-                groupMessages += `
-                <div class="message entry">
-                    <p>
-                        <span class="hour">${message.time}</span>
-                        <span class="name"><strong>${message.from}</strong></span> ${message.text}
-                    </p>
-                </div>`;
-                break;
-            case "message":
-                groupMessages += `
-                <div class="message public">
-                    <p>
-                        <span class="hour">${message.time}</span>
-                        <span class="name"><strong>${message.from}</strong> para <strong>${message.to}</strong>:</span>
-                        ${message.text}
-                    </p>
-                </div>`;
-                break;
-            case "message private_message":
-                groupMessages += `
-                <div class="private">
-                    <p>
-                        <span class="hour">${message.time}</span>
-                        <span class="name"
-                        ><strong>${message.from}</strong> reservadamente para
-                        <strong>${message.to}</strong>:</span>
-                        ${message.text}
-                    </p>
-                </div>`;
-                break;
-        }
-    });
-    printMessages(groupMessages);
-    groupMessages = "";
+function refreshPage(error) {
+    console.log(error.response);
+    window.location.reload();
 }
 
-function printMessages(groupMessages) {
-    const mainContent = document.querySelector("main");
-    // console.log(mainContent.innerHTML);
-    if (mainContent.innerHTML !== groupMessages) {
-        mainContent.innerHTML = groupMessages;
-        const messagesLoaded = document.querySelectorAll(".message");
-        messagesLoaded[messagesLoaded.length - 1].scrollIntoView();
+function loadMessages(messages) {
+    if (!lastMessage){
+        messages.forEach(message => {
+            addMessage(message);
+            printMessages(messageElement);
+            lastMessage = message;
+        });
+    } else {
+        const index = messages.findIndex(object => object.time === lastMessage.time);
+        console.log(index);
+        console.log(messages.length - 1);
+        // console.log(lastMessage);
+        if (messages.length - 1 !== index) {
+            for (let i = index + 1; i < messages.length; i++){
+                console.log(index);
+                addMessage(messages[i]);
+                printMessages(messageElement);
+                lastMessage = messages[i];
+            }        
+        }
     }
+}
+
+function addMessage(message) {
+    switch (message.type) {
+        case "status":
+            messageElement = `
+            <div class="message entry">
+                <p>
+                    <span class="hour">${message.time}</span>
+                    <span class="name"><strong>${message.from}</strong></span> ${message.text}
+                </p>
+            </div>`;
+            break;
+        case "message":
+            messageElement = `
+            <div class="message public">
+                <p>
+                    <span class="hour">${message.time}</span>
+                    <span class="name"><strong>${message.from}</strong> para <strong>${message.to}</strong>:</span>
+                    ${message.text}
+                </p>
+            </div>`;
+            break;
+        case "message private_message":
+            messageElement = `
+            <div class="private">
+                <p>
+                    <span class="hour">${message.time}</span>
+                    <span class="name"
+                    ><strong>${message.from}</strong> reservadamente para
+                    <strong>${message.to}</strong>:</span>
+                    ${message.text}
+                </p>
+            </div>`;
+            break;
+    }
+}
+
+function printMessages(message) {
+    const mainContent = document.querySelector("main");
+    mainContent.innerHTML += message;
+    const messagesLoaded = document.querySelectorAll(".message");
+    messagesLoaded[messagesLoaded.length - 1].scrollIntoView();
+    // console.log(mainContent.innerHTML);
 }
 
 function reloadMessages() {
     let promise = axios.get("https://mock-api.driven.com.br/api/v4/uol/messages");
     promise.then(getMessages);
+    promise.catch(errorGetMessages);
 }
 
 function getMessages(response) {
@@ -149,6 +174,10 @@ function getMessages(response) {
     const messages = response.data;
     console.log(messages);
     loadMessages(messages);
+}
+
+function errorGetMessages(error) {
+    console.log(error.response);
 }
 
 checkLoginName();
