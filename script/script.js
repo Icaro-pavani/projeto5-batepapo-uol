@@ -31,13 +31,17 @@ closeSidebar.addEventListener("click", function () {
 
 contacts.forEach(contact => {
     contact.addEventListener("click", () => {
-        contact.querySelector(".check").classList.toggle("isClose");
+        let checkMark = document.querySelector(".contact .selected");
+        checkMark.classList.remove("selected");
+        contact.querySelector(".check").classList.add("selected");
     })
 });
 
 visibilities.forEach(visibility => {
     visibility.addEventListener("click", () => {
-        visibility.querySelector(".check").classList.toggle("isClose");
+        let checkMark = document.querySelector(".visibility .selected");
+        checkMark.classList.remove("selected");
+        visibility.querySelector(".check").classList.add("selected");
     })
 });
 

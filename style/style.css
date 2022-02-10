@@ -152,6 +152,10 @@ h1 {
     line-height: 19px;
 }
 
+.check {
+    display: none;
+}
+
 ion-icon.check {
     width: 15px;
     height: 12px;
@@ -232,4 +236,8 @@ footer ion-icon {
 
 .isClose {
     display: none;
+}
+
+.selected {
+    display: block;
 }
