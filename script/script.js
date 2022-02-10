@@ -8,6 +8,9 @@ let user = {
     name: null
 };
 
+let adressedUser = "Todos";
+let visibilityValue = "message";
+
 let messageElement = "";
 let membersAreaText = `
         <div class="contact" onclick="selectMember(this);">
@@ -44,6 +47,7 @@ function selectMember(member) {
         checkMark.classList.remove("selected");
     }
     member.querySelector(".check").classList.add("selected");
+    adressedUser = member.querySelector("p").innerHTML;
 }
 
 
@@ -52,7 +56,12 @@ visibilities.forEach(visibility => {
         let checkMark = document.querySelector(".visibility .selected");
         checkMark.classList.remove("selected");
         visibility.querySelector(".check").classList.add("selected");
-    })
+        if (visibility.querySelector("p").innerHTML === "Reservadamente"){
+            visibilityValue = "private_message";
+        } else {
+            visibilityValue = "message";
+        }
+    });
 });
 
 function checkLoginName() {
@@ -88,9 +97,9 @@ function resendName() {
 function sendMessage(message) {
     messageObject = {
         from: user.name,
-        to: "Todos",
+        to: adressedUser,
         text: message,
-        type: "message"
+        type: visibilityValue
     };
     postMessage(messageObject);
 }
@@ -119,19 +128,30 @@ function loadMessages(messages) {
             lastMessage = message;
         });
     } else {
-        const index = messages.findIndex(object => object.time === lastMessage.time);
-        // console.log(index);
-        // console.log(messages.length - 1);
+        const index = indexLastMessage(messages);
+        console.log(index);
+        console.log(messages);
         // console.log(lastMessage);
         if (messages.length - 1 !== index) {
+            lastMessage = messages[messages.length - 1];
             for (let i = index + 1; i < messages.length; i++) {
                 // console.log(index);
                 addMessage(messages[i]);
                 printMessages(messageElement);
-                lastMessage = messages[i];
+                // lastMessage = messages[i];
             }
         }
     }
+}
+
+function indexLastMessage(messages) {
+    let indexMessage = messages.length - 1;
+    for (; indexMessage >= 0; indexMessage--){
+        if (messages[indexMessage].time === lastMessage.time){
+            break;
+        }
+    }
+    return indexMessage;
 }
 
 function addMessage(message) {
@@ -155,7 +175,7 @@ function addMessage(message) {
                 </p>
             </div>`;
             break;
-        case "message private_message":
+        case "private_message":
             messageElement = `
             <div class="private">
                 <p>
