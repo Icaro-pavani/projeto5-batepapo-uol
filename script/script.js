@@ -12,7 +12,7 @@ let user = {
 let adressedUser = "Todos";
 let visibilityValue = "message";
 
-let messageElement = "";
+let messageField = "";
 let membersAreaText = `
         <div class="contact" onclick="selectMember(this);">
           <div class="info">
@@ -28,7 +28,7 @@ let loadMembers = null;
 
 sendButton.addEventListener("click", function () {
     let message = document.querySelector("footer input");
-    sendMessage(message.value);
+    creatMessageToSend(message.value);
     message.value = "";
 })
 
@@ -114,17 +114,17 @@ function resendName() {
     axios.post("https://mock-api.driven.com.br/api/v4/uol/status", user);
 }
 
-function sendMessage(message) {
+function creatMessageToSend(message) {
     messageObject = {
         from: user.name,
         to: adressedUser,
         text: message,
         type: visibilityValue
     };
-    postMessage(messageObject);
+    sendMessage(messageObject);
 }
 
-function postMessage(messageObject) {
+function sendMessage(messageObject) {
     checkDelivery = axios.post("https://mock-api.driven.com.br/api/v4/uol/messages", messageObject);
     checkDelivery.then(refreshAfterPostMessage);
     checkDelivery.catch(refreshPage);
@@ -141,33 +141,34 @@ function refreshPage(error) {
 }
 
 function loadMessages(messages) {
-    if (!lastMessage) {
+    // if (!messageField) {
         messages.forEach(message => {
             addMessage(message);
-            printMessages(messageElement);
-            lastMessage = message;
         });
-    } else {
-        const index = indexLastMessage(messages);
-        console.log(index);
-        console.log(messages);
-        // console.log(lastMessage);
-        if (messages.length - 1 !== index) {
-            lastMessage = messages[messages.length - 1];
-            for (let i = index + 1; i < messages.length; i++) {
-                // console.log(index);
-                addMessage(messages[i]);
-                printMessages(messageElement);
-                // lastMessage = messages[i];
-            }
-        }
-    }
+        printMessages(messageField);
+    // } else {
+    //     const index = indexLastMessage(messages);
+    //     // console.log(index);
+    //     // console.log(messages);
+    //     // console.log(lastMessage);
+    //     if (messages.length - 1 !== index) {
+    //         lastMessage = messages[messages.length - 1];
+    //         for (let i = index + 1; i < messages.length; i++) {
+    //             // console.log(index);
+    //             addMessage(messages[i]);
+    //             printMessages(messageElement);
+    //             // lastMessage = messages[i];
+    //         }
+    //         const messagesLoaded = document.querySelectorAll(".message");
+    //         messagesLoaded[messagesLoaded.length - 1].scrollIntoView();
+    //     }
+    // }
 }
 
 function indexLastMessage(messages) {
     let indexMessage = messages.length - 1;
     for (; indexMessage >= 0; indexMessage--){
-        if (messages[indexMessage].time === lastMessage.time){
+        if (messages[indexMessage].time === lastMessage.time && messages[indexMessage].from === lastMessage.from){
             break;
         }
     }
@@ -177,7 +178,7 @@ function indexLastMessage(messages) {
 function addMessage(message) {
     switch (message.type) {
         case "status":
-            messageElement = `
+            messageField += `
             <div class="message entry">
                 <p>
                     <span class="hour">${message.time}</span>
@@ -186,7 +187,7 @@ function addMessage(message) {
             </div>`;
             break;
         case "message":
-            messageElement = `
+            messageField += `
             <div class="message public">
                 <p>
                     <span class="hour">${message.time}</span>
@@ -196,23 +197,28 @@ function addMessage(message) {
             </div>`;
             break;
         case "private_message":
-            messageElement = `
-            <div class="private">
-                <p>
-                    <span class="hour">${message.time}</span>
-                    <span class="name"
-                    ><strong>${message.from}</strong> reservadamente para
-                    <strong>${message.to}</strong>:</span>
-                    ${message.text}
-                </p>
-            </div>`;
+            if (message.from === user.name || message.to === user.name){
+                messageField += `
+                <div class="private">
+                    <p>
+                        <span class="hour">${message.time}</span>
+                        <span class="name"
+                        ><strong>${message.from}</strong> reservadamente para
+                        <strong>${message.to}</strong>:</span>
+                        ${message.text}
+                    </p>
+                </div>`;
+            }
             break;
     }
 }
 
-function printMessages(message) {
+function printMessages(messages) {
     const mainContent = document.querySelector("main");
-    mainContent.innerHTML += message;
+    if (mainContent.innerHTML !== messageField){
+        mainContent.innerHTML = messageField;
+    }
+    messageField = "";
     const messagesLoaded = document.querySelectorAll(".message");
     messagesLoaded[messagesLoaded.length - 1].scrollIntoView();
     // console.log(mainContent.innerHTML);
@@ -274,5 +280,3 @@ function addMember(member) {
         </div>`
     }
 }
-
-// checkLoginName();
