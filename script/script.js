@@ -27,7 +27,7 @@ let refreshLogin = null;
 let loadMembers = null;
 
 sendButton.addEventListener("click", function () {
-    let message = document.querySelector("input");
+    let message = document.querySelector("footer input");
     sendMessage(message.value);
     message.value = "";
 })
