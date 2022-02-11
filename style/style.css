@@ -68,6 +68,18 @@ strong {
     border-radius: 9px;
 }
 
+.login .loading {
+    width: 96px;
+    height: 96px;
+    margin-bottom: 20px;
+}
+
+.login p {
+    font-size: 18px;
+    text-align: center;
+    color: #000;
+}
+
 header {
     display: flex;
     align-items: center;

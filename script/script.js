@@ -3,6 +3,7 @@ const closeSidebar = document.querySelector('.close-sidebar');
 const contacts = document.querySelectorAll(".contact");
 const visibilities = document.querySelectorAll(".visibility");
 const sendButton = document.querySelector("footer ion-icon");
+const enterButton = document.querySelector(".login button");
 
 let user = {
     name: null
