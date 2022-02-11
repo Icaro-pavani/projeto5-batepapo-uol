@@ -4,6 +4,7 @@ const contacts = document.querySelectorAll(".contact");
 const visibilities = document.querySelectorAll(".visibility");
 const sendButton = document.querySelector("footer ion-icon");
 const enterButton = document.querySelector(".login button");
+const messageInput = document.querySelector("footer input");
 
 let user = {
     name: null
@@ -30,7 +31,14 @@ sendButton.addEventListener("click", function () {
     let message = document.querySelector("footer input");
     creatMessageToSend(message.value);
     message.value = "";
-})
+});
+
+messageInput.addEventListener("keypress", function (e) {
+    if (e.which === 13){
+        creatMessageToSend(this.value);
+        this.value = "";
+    }
+});
 
 options.addEventListener("click", function () {
     document.querySelector(".sidebar").classList.toggle("faded");
@@ -44,7 +52,7 @@ closeSidebar.addEventListener("click", function () {
 
 function selectMember(member) {
     let checkMark = document.querySelector(".contact .selected");
-    if (checkMark !== null){
+    if (checkMark !== null) {
         checkMark.classList.remove("selected");
     }
     member.querySelector(".check").classList.add("selected");
@@ -57,7 +65,7 @@ visibilities.forEach(visibility => {
         let checkMark = document.querySelector(".visibility .selected");
         checkMark.classList.remove("selected");
         visibility.querySelector(".check").classList.add("selected");
-        if (visibility.querySelector("p").innerHTML === "Reservadamente"){
+        if (visibility.querySelector("p").innerHTML === "Reservadamente") {
             visibilityValue = "private_message";
         } else {
             visibilityValue = "message";
@@ -65,7 +73,7 @@ visibilities.forEach(visibility => {
     });
 });
 
-enterButton.addEventListener("click", checkLoginName)
+enterButton.addEventListener("click", checkLoginName);
 
 function checkLoginName() {
     user.name = document.querySelector(".login input").value;
@@ -93,6 +101,9 @@ function toggleLoadScreen() {
 function initiateChat(answer) {
     // console.log(answer.response);
     closeLoginScreen();
+    reloadMessages();
+    // resendName();
+    showMembers();
     initiateMessages = setInterval(reloadMessages, 3000);
     refreshLogin = setInterval(resendName, 5000);
     loadMembers = setInterval(showMembers, 10000);
@@ -141,15 +152,16 @@ function refreshPage(error) {
 }
 
 function loadMessages(messages) {
-    // if (!messageField) {
-        messages.forEach(message => {
-            addMessage(message);
-        });
-        printMessages(messageField);
+    messages.forEach(message => {
+        addMessage(message);
+    });
+    // for (let i = 0; i < messages.length; i++){
+    //     addMessage(messages[i]);
+    printMessages(messageField);
     // } else {
     //     const index = indexLastMessage(messages);
     //     // console.log(index);
-    //     // console.log(messages);
+    // //console.log(messages);
     //     // console.log(lastMessage);
     //     if (messages.length - 1 !== index) {
     //         lastMessage = messages[messages.length - 1];
@@ -167,8 +179,8 @@ function loadMessages(messages) {
 
 function indexLastMessage(messages) {
     let indexMessage = messages.length - 1;
-    for (; indexMessage >= 0; indexMessage--){
-        if (messages[indexMessage].time === lastMessage.time && messages[indexMessage].from === lastMessage.from){
+    for (; indexMessage >= 0; indexMessage--) {
+        if (messages[indexMessage].time === lastMessage.time && messages[indexMessage].from === lastMessage.from) {
             break;
         }
     }
@@ -197,7 +209,7 @@ function addMessage(message) {
             </div>`;
             break;
         case "private_message":
-            if (message.from === user.name || message.to === user.name){
+            if (message.from === user.name || message.to === user.name) {
                 messageField += `
                 <div class="private">
                     <p>
@@ -215,8 +227,8 @@ function addMessage(message) {
 
 function printMessages(messages) {
     const mainContent = document.querySelector("main");
-    if (mainContent.innerHTML !== messageField){
-        mainContent.innerHTML = messageField;
+    if (mainContent.innerHTML !== messages) {
+        mainContent.innerHTML = messages;
     }
     messageField = "";
     const messagesLoaded = document.querySelectorAll(".message");
@@ -269,7 +281,7 @@ function showMemberError(error) {
 }
 
 function addMember(member) {
-    if (member !== user) {
+    if (member.name !== user.name) {
         membersAreaText += `
         <div class="contact" onclick="selectMember(this);">
           <div class="info">
