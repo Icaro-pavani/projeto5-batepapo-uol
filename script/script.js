@@ -255,4 +255,4 @@ function addMember(member) {
     }
 }
 
-checkLoginName();
+// checkLoginName();
