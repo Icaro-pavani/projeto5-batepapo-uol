@@ -65,30 +65,49 @@ visibilities.forEach(visibility => {
     });
 });
 
+enterButton.addEventListener("click", checkLoginName)
+
 function checkLoginName() {
+    user.name = document.querySelector(".login input").value;
     if (user.name) {
         // console.log(user.name)
+        toggleLoadScreen();
         let serverRequisition = axios.post("https://mock-api.driven.com.br/api/v4/uol/participants", user)
         serverRequisition.then(initiateChat);
         serverRequisition.catch(checkError);
     } else {
-        user.name = prompt("Qual será seu nome?");
-        // console.log(user);
-        checkLoginName();
+        document.querySelector(".login input").setAttribute("placeholder", "Insira um nome");
+        // user.name = prompt("Qual será seu nome?");
+        // // console.log(user);
+        // checkLoginName();
     }
+}
+
+function toggleLoadScreen() {
+    document.querySelector(".login input").classList.toggle("isClose");
+    document.querySelector(".login button").classList.toggle("isClose");
+    document.querySelector(".login .loading").classList.toggle("isClose");
+    document.querySelector(".login p").classList.toggle("isClose");
 }
 
 function initiateChat(answer) {
     // console.log(answer.response);
+    closeLoginScreen();
     initiateMessages = setInterval(reloadMessages, 3000);
     refreshLogin = setInterval(resendName, 5000);
     loadMembers = setInterval(showMembers, 10000);
 }
 
 function checkError(error) {
-    user.name = prompt("Nome selecionado já em uso, digite outro nome:");
+    toggleLoadScreen();
+    document.querySelector(".login input").setAttribute("placeholder", "Nome em uso, digite outro");
+    // user.name = prompt("Nome selecionado já em uso, digite outro nome:");
     console.log(error);
-    checkLoginName();
+    // checkLoginName();
+}
+
+function closeLoginScreen() {
+    document.querySelector(".login").classList.add("isClose");
 }
 
 function resendName() {
