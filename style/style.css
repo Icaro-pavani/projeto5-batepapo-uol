@@ -1,3 +1,4 @@
+/* Define que cada item não ultrapasse seu tamanho e algumas cores padrões */
 * {
    box-sizing: border-box; 
    --color-entry: #dcdcdc;
@@ -5,9 +6,12 @@
    --color-private: #ffdede;
 }
 
+/* Define fonte padrão */
 html {
     font-family: 'Roboto', sans-serif;
 }
+
+/* Cor de fundo da página */
 body {
     background-color: #f3f3f3;
 }
@@ -16,6 +20,7 @@ strong {
     font-weight: bold;
 }
 
+/* Formata o layout da tela de login */
 .login {
     position: fixed;
     top: 0;
@@ -80,6 +85,7 @@ strong {
     color: #000;
 }
 
+/* Formata layout da barra fixa do topo da página */
 header {
     display: flex;
     align-items: center;
@@ -105,6 +111,7 @@ header ion-icon {
     margin-right: 22px;
 }
 
+/* Formata layout das mensagens */
 main {
     margin-top: 106px;
     margin-bottom: 85px;
@@ -116,7 +123,6 @@ main div {
     display: flex;
     align-items: center;
     margin-bottom: 4px;
-    /* background-color: #dcdcdc; */
 }
 
 main p {
@@ -151,6 +157,7 @@ main p {
     background-color: var(--color-private);
 }
 
+/* Formata layout da sidebar  */
 .sidebar {
     position: fixed;
     right: 0;
@@ -236,6 +243,7 @@ ion-icon.check {
     margin: 0 27px 0 17px;
 }
 
+/* fundo escuro da sidebar */
 .close-sidebar {
     position: fixed;
     top: 0;
@@ -246,10 +254,12 @@ ion-icon.check {
     z-index: 1;
 }
 
+/* Esconde sidebar */
 .faded {
     transform: translateX(259px);
 }
 
+/* Formata layout da região onde digita e envia a mensagem */
 footer {
     display: flex;
     align-items: center;
@@ -298,10 +308,12 @@ footer ion-icon {
     line-height: 25px;
 }
 
+/* Utilizado para esconder os itens */
 .isClose {
     display: none;
 }
 
+/* Utilizado para mostar o check na frente da pessao selecionada */
 .selected {
     display: block;
 }

@@ -1,10 +1,9 @@
-const options = document.querySelector('.open-sidebar');
+const openParticipantsOnline = document.querySelector('.open-sidebar');
 const closeSidebar = document.querySelector('.close-sidebar');
-const contacts = document.querySelectorAll(".contact");
-const visibilities = document.querySelectorAll(".visibility");
-const sendButton = document.querySelector("footer ion-icon");
-const enterButton = document.querySelector(".login button");
-const messageInput = document.querySelector("footer input");
+const choosePublicOrPrivateMessage = document.querySelectorAll(".visibility");
+const sendMessageButton = document.querySelector("footer ion-icon");
+const enterChatButton = document.querySelector(".login button");
+const sendMessageWithEnter = document.querySelector("footer input");
 
 let user = {
     name: null
@@ -13,35 +12,34 @@ let user = {
 let addressedUser = "Todos";
 let visibilityValue = "message";
 
-let messageField = "";
-let membersAreaText = `
-        <div class="contact" onclick="selectMemberOnline(this);">
+let messagesDivisionInnerHTML = "";
+let ParticipantsDivisionInnerHTML = `
+        <div class="contact" onclick="selectParticipantOnline(this);" data-identifier="participant">
           <div class="info">
             <ion-icon name="people"></ion-icon>
             <p>Todos</p>
           </div>
           <ion-icon class="check" name="checkmark-outline"></ion-icon>
         </div>`;
-let lastMessage = null;
-let initiateMessages = null;
+let initiateMessagesRefresh = null;
 let refreshLogin = null;
-let loadMembers = null;
+let refreshParticipants = null;
 let addressedMemberOnline = false;
 
-sendButton.addEventListener("click", function () {
+sendMessageButton.addEventListener("click", function () {
     let message = document.querySelector("footer input");
     creatMessageToSend(message.value);
     message.value = "";
 });
 
-messageInput.addEventListener("keypress", function (e) {
+sendMessageWithEnter.addEventListener("keypress", function (e) {
     if (e.which === 13) {
         creatMessageToSend(this.value);
         this.value = "";
     }
 });
 
-options.addEventListener("click", function () {
+openParticipantsOnline.addEventListener("click", function () {
     document.querySelector(".sidebar").classList.toggle("faded");
     document.querySelector(".close-sidebar").classList.toggle("isClose");
 });
@@ -51,21 +49,21 @@ closeSidebar.addEventListener("click", function () {
     document.querySelector(".sidebar").classList.toggle("faded");
 });
 
-function selectMemberOnline(member) {
+function selectParticipantOnline(participant) {
     let checkMark = document.querySelector(".contact .selected");
     if (checkMark !== null) {
         checkMark.classList.remove("selected");
     }
-    member.querySelector(".check").classList.add("selected");
-    addressedUser = member.querySelector("p").innerHTML;
+    participant.querySelector(".check").classList.add("selected");
+    addressedUser = participant.querySelector("p").innerHTML;
     if (addressedUser === "Todos") {
         resetSidebarSelection();
     }
-    showaddresserInMessageInput();
+    showAddresserInMessageInput();
 }
 
 
-visibilities.forEach(visibility => {
+choosePublicOrPrivateMessage.forEach(visibility => {
     visibility.addEventListener("click", () => {
         if (addressedUser !== "Todos"){
             let checkMark = document.querySelector(".visibility .selected");
@@ -76,26 +74,22 @@ visibilities.forEach(visibility => {
             } else {
                 visibilityValue = "message";
             }
-            showaddresserInMessageInput();
+            showAddresserInMessageInput();
         }
     });
 });
 
-enterButton.addEventListener("click", checkLoginName);
+enterChatButton.addEventListener("click", checkLoginName);
 
 function checkLoginName() {
     user.name = document.querySelector(".login input").value;
     if (user.name) {
-        // console.log(user.name)
         toggleLoadScreen();
         let serverRequisition = axios.post("https://mock-api.driven.com.br/api/v4/uol/participants", user)
         serverRequisition.then(initiateChat);
         serverRequisition.catch(checkError);
     } else {
         document.querySelector(".login input").setAttribute("placeholder", "Insira um nome");
-        // user.name = prompt("Qual será seu nome?");
-        // // console.log(user);
-        // checkLoginName();
     }
 }
 
@@ -107,13 +101,14 @@ function toggleLoadScreen() {
 }
 
 function initiateChat(answer) {
-    // console.log(answer.response);
+    // Carrega os componentes da página
     closeLoginScreen();
-    reloadMessages();
-    showMembers();
-    initiateMessages = setInterval(reloadMessages, 3000);
-    refreshLogin = setInterval(resendName, 5000);
-    loadMembers = setInterval(showMembers, 10000);
+    loadMessagesToScreen();
+    loadParticipantsToSidebar();
+    // Inicia os ciclos de atualização
+    initiateMessagesRefresh = setInterval(loadMessagesToScreen, 3000);
+    refreshLogin = setInterval(sendUserNameServer, 5000);
+    initiateMessagesRefresh = setInterval(loadParticipantsToSidebar, 10000);
 }
 
 function checkError(error) {
@@ -121,18 +116,16 @@ function checkError(error) {
     const inputElement = document.querySelector(".login input");
     inputElement.setAttribute("placeholder", "Nome em uso, digite outro");
     inputElement.value = "";
-
-    // user.name = prompt("Nome selecionado já em uso, digite outro nome:");
     console.log(error);
-    // checkLoginName();
 }
 
 function closeLoginScreen() {
     document.querySelector(".login").classList.add("isClose");
 }
 
-function resendName() {
-    axios.post("https://mock-api.driven.com.br/api/v4/uol/status", user);
+function sendUserNameServer() {
+    let promise = axios.post("https://mock-api.driven.com.br/api/v4/uol/status", user);
+    promise.catch(refreshPage);
 }
 
 function creatMessageToSend(message) {
@@ -152,8 +145,7 @@ function sendMessage(messageObject) {
 }
 
 function refreshAfterPostMessage(answer) {
-    // console.log(answer);
-    reloadMessages();
+    loadMessagesToScreen();
 }
 
 function refreshPage(error) {
@@ -162,46 +154,15 @@ function refreshPage(error) {
 }
 
 function loadMessages(messages) {
-    messages.forEach(message => {
-        addMessage(message);
-    });
-    // for (let i = 0; i < messages.length; i++){
-    //     addMessage(messages[i]);
-    printMessages(messageField);
-    // } else {
-    //     const index = indexLastMessage(messages);
-    //     // console.log(index);
-    // //console.log(messages);
-    //     // console.log(lastMessage);
-    //     if (messages.length - 1 !== index) {
-    //         lastMessage = messages[messages.length - 1];
-    //         for (let i = index + 1; i < messages.length; i++) {
-    //             // console.log(index);
-    //             addMessage(messages[i]);
-    //             printMessages(messageElement);
-    //             // lastMessage = messages[i];
-    //         }
-    //         const messagesLoaded = document.querySelectorAll(".message");
-    //         messagesLoaded[messagesLoaded.length - 1].scrollIntoView();
-    //     }
-    // }
+    messages.forEach(addMessageToHTMLElement);
+    includeMessagesToHTML(messagesDivisionInnerHTML);
 }
 
-function indexLastMessage(messages) {
-    let indexMessage = messages.length - 1;
-    for (; indexMessage >= 0; indexMessage--) {
-        if (messages[indexMessage].time === lastMessage.time && messages[indexMessage].from === lastMessage.from) {
-            break;
-        }
-    }
-    return indexMessage;
-}
-
-function addMessage(message) {
+function addMessageToHTMLElement(message) {
     switch (message.type) {
         case "status":
-            messageField += `
-            <div class="message entry">
+            messagesDivisionInnerHTML += `
+            <div class="message entry" data-identifier="message">
                 <p>
                     <span class="hour">${message.time}</span>
                     <span class="name"><strong>${message.from}</strong></span> ${message.text}
@@ -209,8 +170,8 @@ function addMessage(message) {
             </div>`;
             break;
         case "message":
-            messageField += `
-            <div class="message public">
+            messagesDivisionInnerHTML += `
+            <div class="message public" data-identifier="message">
                 <p>
                     <span class="hour">${message.time}</span>
                     <span class="name"><strong>${message.from}</strong> para <strong>${message.to}</strong>:</span>
@@ -220,8 +181,8 @@ function addMessage(message) {
             break;
         case "private_message":
             if (message.from === user.name || message.to === user.name) {
-                messageField += `
-                <div class="private">
+                messagesDivisionInnerHTML += `
+                <div class="message private" data-identifier="message">
                     <p>
                         <span class="hour">${message.time}</span>
                         <span class="name"
@@ -235,54 +196,51 @@ function addMessage(message) {
     }
 }
 
-function printMessages(messages) {
+function includeMessagesToHTML(messages) {
     const mainContent = document.querySelector("main");
     if (mainContent.innerHTML !== messages) {
         mainContent.innerHTML = messages;
         const messagesLoaded = document.querySelectorAll(".message");
         messagesLoaded[messagesLoaded.length - 1].scrollIntoView();
     }
-    messageField = "";
-    // console.log(mainContent.innerHTML);
+    messagesDivisionInnerHTML = "";
 }
 
-function reloadMessages() {
+function loadMessagesToScreen() {
     let promise = axios.get("https://mock-api.driven.com.br/api/v4/uol/messages");
-    promise.then(getMessages);
-    promise.catch(errorGetMessages);
+    promise.then(getMessagesFromServer);
+    promise.catch(errorGetMessagesFromServer);
 }
 
-function getMessages(response) {
-    // console.log(response);
+function getMessagesFromServer(response) {
     const messages = response.data;
-    // console.log(messages);
     loadMessages(messages);
 }
 
-function errorGetMessages(error) {
+function errorGetMessagesFromServer(error) {
     console.log(error.response);
     window.location.reload();
 }
 
-function showMembers() {
+function loadParticipantsToSidebar() {
     let promise = axios.get("https://mock-api.driven.com.br/api/v4/uol/participants");
-    promise.then(getMembers);
-    promise.catch(showMemberError);
+    promise.then(getParticipantsFromServer);
+    promise.catch(showParticipantsError);
 }
 
-function getMembers(members) {
-    // console.log(members);
-    const membersDisplay = document.querySelector(".contacts");
+function getParticipantsFromServer(participants) {
+    const participantsDisplay = document.querySelector(".contacts");
     addressedMemberOnline = false;
-    members.data.forEach(addMember);
-    membersDisplay.innerHTML = membersAreaText;
-    if (!membersAreaText.includes(addressedUser) || addressedUser === "Todos") {
+    participants.data.forEach(addParticipantToHTMLElement);
+    participantsDisplay.innerHTML = ParticipantsDivisionInnerHTML;
+    if (!ParticipantsDivisionInnerHTML.includes(addressedUser) || addressedUser === "Todos") {
         addressedUser = "Todos";
         visibilityValue = "message";
         resetSidebarSelection();
+        showAddresserInMessageInput()
     }
-    membersAreaText = `
-            <div class="contact" onclick="selectMemberOnline(this);">
+    ParticipantsDivisionInnerHTML = `
+            <div class="contact" onclick="selectParticipantOnline(this);" data-identifier="participant">
               <div class="info">
                 <ion-icon name="people"></ion-icon>
                 <p>Todos</p>
@@ -291,28 +249,28 @@ function getMembers(members) {
             </div>`;
 }
 
-function showMemberError(error) {
+function showParticipantsError(error) {
     console.log(error.response);
     window.location.reload();
 }
 
-function addMember(member) {
-    if (member.name !== user.name) {
-        if (member.name === addressedUser) {
-            membersAreaText += `
-            <div class="contact" onclick="selectMemberOnline(this);">
+function addParticipantToHTMLElement(participant) {
+    if (participant.name !== user.name) {
+        if (participant.name === addressedUser) {
+            ParticipantsDivisionInnerHTML += `
+            <div class="contact" onclick="selectParticipantOnline(this);" data-identifier="participant">
                 <div class="info">
                     <ion-icon name="person-circle"></ion-icon>
-                    <p>${member.name}</p>
+                    <p>${participant.name}</p>
                 </div>
                 <ion-icon class="check selected" name="checkmark-outline"></ion-icon>
             </div>`;
         } else {
-            membersAreaText += `
-            <div class="contact" onclick="selectMemberOnline(this);">
+            ParticipantsDivisionInnerHTML += `
+            <div class="contact" onclick="selectParticipantOnline(this);" data-identifier="participant">
               <div class="info">
                 <ion-icon name="person-circle"></ion-icon>
-                <p>${member.name}</p>
+                <p>${participant.name}</p>
               </div>
               <ion-icon class="check" name="checkmark-outline"></ion-icon>
             </div>`;
@@ -329,7 +287,7 @@ function resetSidebarSelection() {
     visibilityOptions[1].classList.remove("selected");
 }
 
-function showaddresserInMessageInput() {
+function showAddresserInMessageInput() {
     const messageInformation = document.querySelector("footer p");
     if (addressedUser !== "Todos"){
         messageInformation.classList.remove("isClose");

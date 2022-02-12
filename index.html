@@ -14,26 +14,32 @@
       type="module"
       src="https://unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.esm.js"
     ></script>
+    <!-- icone na aba da página -->
+    <link href="favicon.ico" rel="icon" type="image/x-icon" />
     <title>Bate-Papo Uol</title>
   </head>
   <body>
+    <!-- Página de entrada para login -->
     <section class="login">
       <img src="images/logo.svg" alt="Bate-papo Uol"/>
-      <input type="text" placeholder="Digite seu nome">
-      <button>Entrar</button>
+      <input type="text" placeholder="Digite seu nome" data-identifier="enter-name">
+      <button data-identifier="start">Entrar</button>
       <img src="images/96x96.gif" class="loading isClose" alt="loading">
       <p class="isClose">Entrando...</p>
     </section>
 
+    <!-- Barra fixxa no topo -->
     <header>
       <img src="images/logo.svg" alt="Bate-Papo Uol" />
       <ion-icon class="open-sidebar" name="people"></ion-icon>
     </header>
 
+    <!-- Seção das mensagens -->
     <main>
       
     </main>
 
+    <!-- Sidebar -->
     <aside class="sidebar faded">
       <div class="title">
         <h1>Escolha um contato para enviar mensagem:</h1>
@@ -45,14 +51,14 @@
       <div class="second-title">
         <h1>Escolha a visibilidade:</h1>
       </div>
-      <div class="visibility">
+      <div class="visibility" data-identifier="visibility">
         <div class="info">
           <ion-icon name="lock-open"></ion-icon>
           <p>Público</p>
         </div>
         <ion-icon class="check selected" name="checkmark-outline"></ion-icon>
       </div>
-      <div class="visibility">
+      <div class="visibility" data-identifier="visibility">
         <div class="info">
           <ion-icon name="lock-closed"></ion-icon>
           <p>Reservadamente</p>
@@ -62,12 +68,13 @@
     </aside>
     <div class="close-sidebar isClose"></div>
 
+    <!-- Campo de inserção de imagem e envio -->
     <footer>
       <div class="message-field">
         <input type="text" placeholder="Escreva aqui..." />
         <p class="isClose">Enviando para Maria(Reservadamente)</p>
       </div>
-      <ion-icon name="paper-plane-outline"></ion-icon>
+      <ion-icon name="paper-plane-outline" data-identifier="send-message"></ion-icon>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
