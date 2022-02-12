@@ -10,7 +10,7 @@ let user = {
     name: null
 };
 
-let adressedUser = "Todos";
+let addressedUser = "Todos";
 let visibilityValue = "message";
 
 let messageField = "";
@@ -26,7 +26,7 @@ let lastMessage = null;
 let initiateMessages = null;
 let refreshLogin = null;
 let loadMembers = null;
-let adressedMemberOnline = false;
+let addressedMemberOnline = false;
 
 sendButton.addEventListener("click", function () {
     let message = document.querySelector("footer input");
@@ -57,19 +57,26 @@ function selectMemberOnline(member) {
         checkMark.classList.remove("selected");
     }
     member.querySelector(".check").classList.add("selected");
-    adressedUser = member.querySelector("p").innerHTML;
+    addressedUser = member.querySelector("p").innerHTML;
+    if (addressedUser === "Todos") {
+        resetSidebarSelection();
+    }
+    showaddresserInMessageInput();
 }
 
 
 visibilities.forEach(visibility => {
     visibility.addEventListener("click", () => {
-        let checkMark = document.querySelector(".visibility .selected");
-        checkMark.classList.remove("selected");
-        visibility.querySelector(".check").classList.add("selected");
-        if (visibility.querySelector("p").innerHTML === "Reservadamente") {
-            visibilityValue = "private_message";
-        } else {
-            visibilityValue = "message";
+        if (addressedUser !== "Todos"){
+            let checkMark = document.querySelector(".visibility .selected");
+            checkMark.classList.remove("selected");
+            visibility.querySelector(".check").classList.add("selected");
+            if (visibility.querySelector("p").innerHTML === "Reservadamente") {
+                visibilityValue = "private_message";
+            } else {
+                visibilityValue = "message";
+            }
+            showaddresserInMessageInput();
         }
     });
 });
@@ -114,7 +121,7 @@ function checkError(error) {
     const inputElement = document.querySelector(".login input");
     inputElement.setAttribute("placeholder", "Nome em uso, digite outro");
     inputElement.value = "";
-    
+
     // user.name = prompt("Nome selecionado já em uso, digite outro nome:");
     console.log(error);
     // checkLoginName();
@@ -131,7 +138,7 @@ function resendName() {
 function creatMessageToSend(message) {
     messageObject = {
         from: user.name,
-        to: adressedUser,
+        to: addressedUser,
         text: message,
         type: visibilityValue
     };
@@ -266,16 +273,13 @@ function showMembers() {
 function getMembers(members) {
     // console.log(members);
     const membersDisplay = document.querySelector(".contacts");
-    adressedMemberOnline = false;
+    addressedMemberOnline = false;
     members.data.forEach(addMember);
     membersDisplay.innerHTML = membersAreaText;
-    if (!membersAreaText.includes(adressedUser)){
-        adressedUser = "Todos";
+    if (!membersAreaText.includes(addressedUser) || addressedUser === "Todos") {
+        addressedUser = "Todos";
         visibilityValue = "message";
-        membersDisplay.querySelector(".check").classList.add("selected");
-        const visibilityOptions = document.querySelectorAll(".visibility .check");
-        visibilityOptions[0].classList.add("selected");
-        visibilityOptions[1].classList.remove("selected");
+        resetSidebarSelection();
     }
     membersAreaText = `
             <div class="contact" onclick="selectMemberOnline(this);">
@@ -294,7 +298,7 @@ function showMemberError(error) {
 
 function addMember(member) {
     if (member.name !== user.name) {
-        if (member.name === adressedUser) {
+        if (member.name === addressedUser) {
             membersAreaText += `
             <div class="contact" onclick="selectMemberOnline(this);">
                 <div class="info">
@@ -313,5 +317,28 @@ function addMember(member) {
               <ion-icon class="check" name="checkmark-outline"></ion-icon>
             </div>`;
         }
+    }
+}
+
+function resetSidebarSelection() {
+    addressedUser = "Todos";
+    visibilityValue = "message";
+    document.querySelector(".contacts .check").classList.add("selected");
+    const visibilityOptions = document.querySelectorAll(".visibility .check");
+    visibilityOptions[0].classList.add("selected");
+    visibilityOptions[1].classList.remove("selected");
+}
+
+function showaddresserInMessageInput() {
+    const messageInformation = document.querySelector("footer p");
+    if (addressedUser !== "Todos"){
+        messageInformation.classList.remove("isClose");
+        if (visibilityValue === "message"){
+            messageInformation.innerHTML = `Enviando para ${addressedUser}`;
+        } else {
+            messageInformation.innerHTML = `Enviando para ${addressedUser} (reservadamente)`;
+        }
+    } else {
+        messageInformation.classList.add("isClose");
     }
 }
