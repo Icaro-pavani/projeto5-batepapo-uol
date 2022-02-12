@@ -15,7 +15,7 @@ let visibilityValue = "message";
 
 let messageField = "";
 let membersAreaText = `
-        <div class="contact" onclick="selectMember(this);">
+        <div class="contact" onclick="selectMemberOnline(this);">
           <div class="info">
             <ion-icon name="people"></ion-icon>
             <p>Todos</p>
@@ -26,6 +26,7 @@ let lastMessage = null;
 let initiateMessages = null;
 let refreshLogin = null;
 let loadMembers = null;
+let adressedMemberOnline = false;
 
 sendButton.addEventListener("click", function () {
     let message = document.querySelector("footer input");
@@ -34,7 +35,7 @@ sendButton.addEventListener("click", function () {
 });
 
 messageInput.addEventListener("keypress", function (e) {
-    if (e.which === 13){
+    if (e.which === 13) {
         creatMessageToSend(this.value);
         this.value = "";
     }
@@ -50,7 +51,7 @@ closeSidebar.addEventListener("click", function () {
     document.querySelector(".sidebar").classList.toggle("faded");
 });
 
-function selectMember(member) {
+function selectMemberOnline(member) {
     let checkMark = document.querySelector(".contact .selected");
     if (checkMark !== null) {
         checkMark.classList.remove("selected");
@@ -102,7 +103,6 @@ function initiateChat(answer) {
     // console.log(answer.response);
     closeLoginScreen();
     reloadMessages();
-    // resendName();
     showMembers();
     initiateMessages = setInterval(reloadMessages, 3000);
     refreshLogin = setInterval(resendName, 5000);
@@ -111,7 +111,10 @@ function initiateChat(answer) {
 
 function checkError(error) {
     toggleLoadScreen();
-    document.querySelector(".login input").setAttribute("placeholder", "Nome em uso, digite outro");
+    const inputElement = document.querySelector(".login input");
+    inputElement.setAttribute("placeholder", "Nome em uso, digite outro");
+    inputElement.value = "";
+    
     // user.name = prompt("Nome selecionado já em uso, digite outro nome:");
     console.log(error);
     // checkLoginName();
@@ -229,10 +232,10 @@ function printMessages(messages) {
     const mainContent = document.querySelector("main");
     if (mainContent.innerHTML !== messages) {
         mainContent.innerHTML = messages;
+        const messagesLoaded = document.querySelectorAll(".message");
+        messagesLoaded[messagesLoaded.length - 1].scrollIntoView();
     }
     messageField = "";
-    const messagesLoaded = document.querySelectorAll(".message");
-    messagesLoaded[messagesLoaded.length - 1].scrollIntoView();
     // console.log(mainContent.innerHTML);
 }
 
@@ -251,6 +254,7 @@ function getMessages(response) {
 
 function errorGetMessages(error) {
     console.log(error.response);
+    window.location.reload();
 }
 
 function showMembers() {
@@ -260,35 +264,54 @@ function showMembers() {
 }
 
 function getMembers(members) {
-    console.log(members);
+    // console.log(members);
     const membersDisplay = document.querySelector(".contacts");
-    members.data.forEach(member => {
-        addMember(member);
-    });
+    adressedMemberOnline = false;
+    members.data.forEach(addMember);
     membersDisplay.innerHTML = membersAreaText;
+    if (!membersAreaText.includes(adressedUser)){
+        adressedUser = "Todos";
+        visibilityValue = "message";
+        membersDisplay.querySelector(".check").classList.add("selected");
+        const visibilityOptions = document.querySelectorAll(".visibility .check");
+        visibilityOptions[0].classList.add("selected");
+        visibilityOptions[1].classList.remove("selected");
+    }
     membersAreaText = `
-        <div class="contact" onclick="selectMember(this);">
-          <div class="info">
-            <ion-icon name="people"></ion-icon>
-            <p>Todos</p>
-          </div>
-          <ion-icon class="check" name="checkmark-outline"></ion-icon>
-        </div>`;
+            <div class="contact" onclick="selectMemberOnline(this);">
+              <div class="info">
+                <ion-icon name="people"></ion-icon>
+                <p>Todos</p>
+              </div>
+              <ion-icon class="check" name="checkmark-outline"></ion-icon>
+            </div>`;
 }
 
 function showMemberError(error) {
     console.log(error.response);
+    window.location.reload();
 }
 
 function addMember(member) {
     if (member.name !== user.name) {
-        membersAreaText += `
-        <div class="contact" onclick="selectMember(this);">
-          <div class="info">
-            <ion-icon name="person-circle"></ion-icon>
-            <p>${member.name}</p>
-          </div>
-          <ion-icon class="check" name="checkmark-outline"></ion-icon>
-        </div>`
+        if (member.name === adressedUser) {
+            membersAreaText += `
+            <div class="contact" onclick="selectMemberOnline(this);">
+                <div class="info">
+                    <ion-icon name="person-circle"></ion-icon>
+                    <p>${member.name}</p>
+                </div>
+                <ion-icon class="check selected" name="checkmark-outline"></ion-icon>
+            </div>`;
+        } else {
+            membersAreaText += `
+            <div class="contact" onclick="selectMemberOnline(this);">
+              <div class="info">
+                <ion-icon name="person-circle"></ion-icon>
+                <p>${member.name}</p>
+              </div>
+              <ion-icon class="check" name="checkmark-outline"></ion-icon>
+            </div>`;
+        }
     }
 }
