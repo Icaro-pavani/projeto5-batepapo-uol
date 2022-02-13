@@ -25,6 +25,7 @@ let initiateMessagesRefresh = null;
 let refreshLogin = null;
 let refreshParticipants = null;
 let addressedMemberOnline = false;
+let lastMessage = null;
 
 sendMessageButton.addEventListener("click", function () {
     let message = document.querySelector("footer input");
@@ -214,7 +215,15 @@ function loadMessagesToScreen() {
 
 function getMessagesFromServer(response) {
     const messages = response.data;
-    loadMessages(messages);
+    if (!lastMessage){
+        lastMessage = messages[messages.length - 1];
+        loadMessages(messages);
+    } else {
+        if (lastMessage.time !== messages[messages.length - 1].time && lastMessage.from !== messages[messages.length - 1].from){
+            loadMessages(messages);
+            lastMessage = messages[messages.length - 1];
+        }
+    }
 }
 
 function errorGetMessagesFromServer(error) {
